@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test'); //Kind of Importing a package or test annotation
 
 //test.only annotation helps in running only a particular test in a file.
-test('Launch Google with new browser instance', async ({ browser }) => {
+test.only('Launch Google with new browser instance', async ({ browser }) => {
     // Creates a new Instance of a browser with the required settings
     const context = await browser.newContext();
   
