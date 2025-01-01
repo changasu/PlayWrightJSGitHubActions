@@ -42,9 +42,13 @@ jobs:
         name: allure-report
         path: allure-report/
 
+     - name: Set unique path for report
+       run: echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
+
     - name: Deploy Allure report to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: allure-report
         publish_branch: gh-pages
+        dest_dir: ${{ env.REPORT_PATH }}
