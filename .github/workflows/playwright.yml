@@ -59,3 +59,7 @@ jobs:
         publish_dir: .
         publish_branch: gh-pages
         dest_dir: ${{ env.REPORT_PATH }}
+
+    - name: Display the deployed URL
+      run: |
+        echo "Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ env.REPORT_PATH }}/"
