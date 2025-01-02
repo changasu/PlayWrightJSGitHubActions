@@ -44,8 +44,9 @@ jobs:
 
     - name: Set unique path for report
       run: |
-        echo "REPORT_PATH=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}" >> $GITHUB_ENV
-        echo "GitHub Pages URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}/"
+        echo "REPORT_PATH= reports/${{ github.run_id }}" >> $GITHUB_ENV
+        echo "GitHub Pages URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
+        echo "GitHub Pages URL: ${{ env.REPORT_PATH }}"
 
     - name: Move Allure report to unique path
       run: |
@@ -56,6 +57,6 @@ jobs:
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: allure-report
+        publish_dir: .
         publish_branch: gh-pages
         dest_dir: ${{ env.REPORT_PATH }}
