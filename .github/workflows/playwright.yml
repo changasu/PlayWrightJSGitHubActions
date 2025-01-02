@@ -44,7 +44,7 @@ jobs:
 
     - name: Set unique path for report
       run: |
-        echo "REPORT_PATH= reports/${{ github.run_id }}" >> $GITHUB_ENV
+        echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
         echo "GitHub Pages URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
 
     - name: Move Allure report to unique path
@@ -62,4 +62,4 @@ jobs:
 
     - name: Display the deployed URL
       run: |
-        echo "Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ env.REPORT_PATH }}/"
+        echo "::notice ::Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
