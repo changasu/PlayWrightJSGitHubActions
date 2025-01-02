@@ -74,17 +74,24 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
+          // Check if github.context is available
+          if (!github.context) {
+            throw new Error('GitHub context is undefined.');
+          }
+
+          console.log('GitHub Context:', JSON.stringify(github.context, null, 2)); // Log the full context
+
           const { owner, repo } = github.context.repo;
           const sha = github.context.sha;
-          
-          // Log the available context for debugging
-          console.log(`GitHub Context: ${JSON.stringify(github.context, null, 2)}`);
-          
+
+          // Check if sha is available
           if (!sha) {
             throw new Error('Commit SHA is not available in this push event.');
           }
 
           console.log(`Commit SHA: ${sha}`);
+          console.log(`Repository Owner: ${owner}`);
+          console.log(`Repository Name: ${repo}`);
 
           // Post a comment on the commit
           await github.rest.repos.createCommitComment({
