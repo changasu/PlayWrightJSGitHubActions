@@ -88,8 +88,8 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const github = require('@actions/github');
-          const context = github.context;
+          const actionsgithub = require('@actions/github');
+          const context = actionsgithub.context;
           const commit_sha = context.sha;
           console.log(`Commit SHA: ${commit_sha}`);
           await github.rest.repos.createCommitComment({
