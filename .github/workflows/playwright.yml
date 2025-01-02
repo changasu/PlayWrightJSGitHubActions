@@ -88,11 +88,13 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const commit_sha = require('@actions/github').context.sha;
-          console.log(`Commit SHA: ${commit_sha}`);
-          await github.rest.repos.createCommitComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            commit_sha: commit_sha,
-            body: `Deployed Report: [Click here](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}/)`
+          const { context, getOctokit } = require('@actions/github'); 
+          const octokit = getOctokit(process.env.GITHUB_TOKEN); 
+          const commit_sha = context.sha; 
+          console.log(`Commit SHA: ${commit_sha}`); 
+          await octokit.rest.repos.createCommitComment({ 
+            owner: context.repo.owner, 
+            repo: context.repo.repo, 
+            commit_sha: commit_sha, 
+            body: `Deployed Report: [Click here](https://${{ context.repo.owner }}.github.io/${{ context.repo.repo }}/reports/${{ context.runId }}/)` 
           });
