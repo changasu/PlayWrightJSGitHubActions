@@ -65,6 +65,7 @@ jobs:
         echo "::notice ::Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
 
     - name: Post Deployed Report Link as Comment
+      if: ${{ github.event_name == 'pull_request' }}
       uses: actions/github-script@v6
       with:
         script: |
@@ -72,5 +73,17 @@ jobs:
             issue_number: ${{ github.event.pull_request.number }},
             owner: context.repo.owner,
             repo: context.repo.repo,
+            body: `Deployed Report: [Click here](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}/)`
+          })
+
+
+    - name: Post Deployed Report Link as Commit Comment
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.repos.createCommitComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            commit_sha: github.sha,
             body: `Deployed Report: [Click here](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}/)`
           })
