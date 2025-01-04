@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm ci # Ensure dependencies are installed in this stage as well
       - name: Run Playwright tests
         run: npx playwright test .tests/githubIntegration.spec.js
       - uses: actions/upload-artifact@v4
