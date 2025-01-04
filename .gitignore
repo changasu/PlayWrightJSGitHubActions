@@ -46,5 +46,4 @@ allure-report/widgets/severity.json
 allure-report/widgets/status-chart.json
 allure-report/widgets/suites.json
 allure-report/widgets/summary.json
-allure-results/1c342669-0409-4f15-9646-ddc39168b045-result.json
-allure-results/21e5c80b-c9b8-40e6-b579-aa663388606c-attachment.txt
+allure-results/*
