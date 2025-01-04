@@ -70,7 +70,7 @@ jobs:
         echo "::notice ::Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
 
     - name: Post Commit Comment for Push Event
-      if: ${{ github.event_name == 'push' }}
+      if: ${{ github.event_name == 'push#Remove' }}
       uses: actions/github-script@v6
       with:
         script: |
@@ -120,4 +120,3 @@ jobs:
             commit_sha: pr_commit_sha,
             body: `Deployed Report: [Click here](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}/)`
           });
-

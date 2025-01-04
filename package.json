@@ -13,6 +13,7 @@
   "devDependencies": {
     "@playwright/test": "^1.49.1",
     "@types/node": "^22.10.2",
+    "@zerostep/playwright": "^0.1.5",
     "allure-playwright": "^3.0.7"
   }
 }
