@@ -1,4 +1,5 @@
 name: Playwright Tests
+
 on:
   push:
     branches: [ main, master ]
@@ -10,113 +11,70 @@ permissions:
   issues: write
 
 jobs:
-  test:
-    timeout-minutes: 60
+  setup:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install chromium
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline
 
-    - name: Install Allure CLI
-      run: npm install -g allure-commandline
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run Playwright tests
+        run: npx playwright test .tests/githubIntegration.spec.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
 
-    - name: Run Playwright tests
-      run: npx playwright test .tests/githubIntegration.spec.js
-    - uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+  report:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Allure report
+        run: |
+          mkdir -p allure-results
+          allure generate allure-results --clean -o allure-report
+      - name: Upload Allure report
+        if: always() # Ensure the report is uploaded even if tests fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+      - name: Set unique path for report
+        run: |
+          echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
+          echo "GitHub Pages URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
+      - name: Move Allure report to unique path
+        run: |
+          mkdir -p ${{ env.REPORT_PATH }}
+          cp -r allure-report/* ${{ env.REPORT_PATH }}/
 
-    - name: Generate Allure report
-      run: |
-        mkdir -p allure-results
-        allure generate allure-results --clean -o allure-report
-
-    - name: Upload Allure report
-      if: always() # Ensure the report is uploaded even if tests fail
-      uses: actions/upload-artifact@v4
-      with:
-        name: allure-report
-        path: allure-report/
-
-    - name: Set unique path for report
-      run: |
-        echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
-        echo "GitHub Pages URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
-
-    - name: Move Allure report to unique path
-      run: |
-        mkdir -p ${{ env.REPORT_PATH }}
-        cp -r allure-report/* ${{ env.REPORT_PATH }}/
-
-    - name: Deploy Allure report to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: .
-        publish_branch: gh-pages
-        dest_dir: ${{ env.REPORT_PATH }}
-
-    - name: Display the deployed URL
-      run: |
-        echo "::notice ::Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
-
-    - name: Post Commit Comment for Push Event
-      if: ${{ github.event_name == 'push#Remove' }}
-      uses: actions/github-script@v6
-      with:
-        script: |
-          // Check if github.context is available
-          if (!github.context) {
-            throw new Error('GitHub context is undefined.');
-          }
-
-          console.log('GitHub Context:', JSON.stringify(github.context, null, 2)); // Log the full context
-
-          const { owner, repo } = github.context.repo;
-          const sha = github.context.sha;
-
-          // Check if sha is available
-          if (!sha) {
-            throw new Error('Commit SHA is not available in this push event.');
-          }
-
-          console.log(`Commit SHA: ${sha}`);
-          console.log(`Repository Owner: ${owner}`);
-          console.log(`Repository Name: ${repo}`);
-
-          // Post a comment on the commit
-          await github.rest.repos.createCommitComment({
-            owner: owner,
-            repo: repo,
-            commit_sha: sha,
-            body: `Deployed Report: [Click here](https://${{ github.repository_owner }}.github.io/${{ github.repository }}./reports/${{ github.run_id }})`
-          });
-
-    - name: Post Commit Comment for Pull Request Event
-      if: ${{ github.event_name == 'pull_request' }}
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const pr_commit_sha = github.context.payload.pull_request.head.sha;  // PR's head commit SHA
-          if (!pr_commit_sha) {
-            throw new Error('Commit SHA for the PR is not available.');
-          }
-
-          console.log(`Pull Request Commit SHA: ${pr_commit_sha}`);
-          
-          // Post a comment on the pull request's head commit
-          await github.rest.repos.createCommitComment({
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            commit_sha: pr_commit_sha,
-            body: `Deployed Report: [Click here](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}/)`
-          });
+  deploy:
+    needs: report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Allure report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: gh-pages
+          dest_dir: ${{ env.REPORT_PATH }}
+      - name: Display the deployed URL
+        run: |
+          echo "::notice ::Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
