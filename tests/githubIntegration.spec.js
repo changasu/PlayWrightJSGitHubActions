@@ -11,3 +11,12 @@ test('Launch Google with new browser instance', async ({ browser }) => {
     console.log(await page.title());
     await expect(page).toHaveTitle("Google");
   });
+
+  test('Click Google Search Results', async ({ page }) => {
+    await page.goto('https://www.google.com/');
+    //await page.getByLabel('Search', { exact: true }).click();
+    await page.getByLabel('Search', { exact: true }).fill('PlayWright Automation');
+    await page.getByRole('button', { name: 'Google Search' }).click();
+    await page.locator("(//div[@id='search']//a)[1]").click();
+    await page.locator("(//*[contains(@class,'navbar__title') and text()='Playwright'])[1]").isVisible();
+  });
