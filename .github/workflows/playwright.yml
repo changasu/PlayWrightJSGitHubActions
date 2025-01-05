@@ -125,7 +125,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{ env.REPORT_PATH }}
           publish_branch: gh-pages
-          dest_dir: ${{ env.REPORT_PATH }}
+          destination_dir: ${{ env.REPORT_PATH }}
 
       # Display the deployed Allure report URL
       - name: Display Deployed Report URL
