@@ -1,3 +1,0 @@
-"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","853","Launch Google with new browser instance","chromium","Sun Jan 05 14:33:09 UTC 2025","passed","Sun Jan 05 14:33:10 UTC 2025","","githubIntegration.spec.js","",""
-"","2130","Codegen Automation Tool","chromium","Sun Jan 05 14:33:10 UTC 2025","passed","Sun Jan 05 14:33:13 UTC 2025","","githubIntegration.spec.js","",""
