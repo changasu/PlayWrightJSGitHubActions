@@ -11,7 +11,7 @@ permissions:
   issues: write
 
 jobs:
-  test & report:
+  testExecutionandReporting:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
