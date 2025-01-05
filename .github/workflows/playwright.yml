@@ -85,11 +85,6 @@ jobs:
         with:
           name: allure-report
 
-      - name: Debug Artifact Download
-        run: |
-          echo "Listing downloaded artifact contents:"
-          ls -l allure-report
-
       - name: Set unique path for report
         run: |
           echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
