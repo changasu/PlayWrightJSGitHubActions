@@ -11,3 +11,10 @@ test('Launch Google with new browser instance', async ({ browser }) => {
     console.log(await page.title());
     await expect(page).toHaveTitle("Google");
   });
+
+  test('Codegen Automation Tool', async ({ page }) => {
+    await page.goto('https://www.google.com/');
+    await page.getByLabel('Search', { exact: true }).fill('Testing using Playwright');
+    await page.getByLabel('Google Search').first().click();
+    await page.getByRole('link', { name: 'Playwright: Fast and reliable' }).click();
+  });
