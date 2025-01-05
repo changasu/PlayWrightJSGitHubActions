@@ -102,7 +102,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
           publish_branch: gh-pages
-          dest_dir: ${{ env.REPORT_PATH }}
+          destination_dir: ${{ env.REPORT_PATH }}
       - name: Display the deployed URL
         run: |
           echo "::notice ::Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
