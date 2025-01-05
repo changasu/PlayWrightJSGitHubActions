@@ -75,6 +75,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Use the Node.js version installed in the setup job
+      - name: Use Node.js version from setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ needs.setup.outputs.node-version }}
+
       # Set report path environment variable
       - name: Set REPORT_PATH variable
         run: echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
