@@ -70,21 +70,22 @@ jobs:
       run: |
         echo "::notice ::Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
 
-    - name: Verify SLACK_WEBHOOK_URL secret
+    # Step 1: Determine Workflow Status and Send Slack Notification
+    - name: Notify Slack of Workflow Status
       run: |
-        if [ -z "${{ secrets.SLACKWEBHOOKURL }}" ]; then
-          echo "SLACK_WEBHOOK_URL is not set!"
-          exit 1
+        if [ "${{ job.status }}" == "success" ]; then
+          STATUS="✅ Workflow Succeeded"
+        elif [ "${{ job.status }}" == "failure" ]; then
+          STATUS="❌ Workflow Failed"
         else
-          echo "SLACK_WEBHOOK_URL is set!"
+          STATUS="⚠️ Workflow Skipped"
         fi
-
-    - name: Send notification to Slack 
-      uses: 8398a7/action-slack@v3 
-      with: 
-        status: ${{ job.status }} 
-        fields: repo,message,commit,author,action 
-        url: ${{ secrets.SLACKWEBHOOKURL }} 
-        author_name: GitHub Actions 
-        icon_emoji: https://github.com/images/logo.png 
-        message: "Latest GitHub Actions Pipeline Status:"
+        curl -X POST -H 'Content-type: application/json' \
+        --data "{
+          \"text\": \"${STATUS}\n*Branch*: ${{ github.ref_name }}\n*Commit*: ${{ github.sha }}\n*Committer*: ${{ github.actor }}\n*Workflow*: ${{ github.workflow }}\",
+          \"attachments\": [
+            {
+              \"text\": \"View more details: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Click here>\"
+            }
+          ]
+        }" ${{ secrets.SLACKWEBHOOKURL }}
