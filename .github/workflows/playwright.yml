@@ -10,9 +10,6 @@ permissions:
   contents: write
   issues: write
 
-env: 
-  REPORT_PATH: ""
-
 jobs:
   # Setup Job: Install dependencies locally (including playwright and @playwright/test)
   setup:
@@ -32,9 +29,6 @@ jobs:
       # Install dependencies (including playwright and @playwright/test locally)
       - name: Install Local Dependencies
         run: npm ci  # This installs the dependencies defined in package.json
-
-      - name: Set REPORT_PATH variable
-        run: echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
 
   # Test Job: This job will run the Playwright tests
   test:
@@ -81,6 +75,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Set report path environment variable
+      - name: Set REPORT_PATH variable
+        run: echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
+
       # Install Allure CLI if not available globally
       - name: Install Allure CLI
         run: npm install -g allure-commandline
@@ -114,9 +112,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Print report path environment variable
-      - name: Print Report Path
+      # Set report path environment variable
+      - name: Set Report Path
         run: |
+          echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
           echo "GitHub Pages URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
 
       # Deploy Allure Report to GitHub Pages
