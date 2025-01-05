@@ -72,9 +72,10 @@ jobs:
 
     - name: Send notification to Slack 
       uses: 8398a7/action-slack@v3 
-      with: status: ${{ job.status }} 
-      fields: repo,message,commit,author,action 
-      url: ${{ secrets.SLACK_WEBHOOK_URL }} 
-      author_name: GitHub Actions 
-      author_icon: https://github.com/images/logo.png 
-      message: "Latest GitHub Actions Pipeline Status:"
+      with: 
+        status: ${{ job.status }} 
+        fields: repo,message,commit,author,action 
+        url: ${{ secrets.SLACK_WEBHOOK_URL }} 
+        author_name: GitHub Actions 
+        author_icon: https://github.com/images/logo.png 
+        message: "Latest GitHub Actions Pipeline Status:"
