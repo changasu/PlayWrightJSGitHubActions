@@ -12,9 +12,12 @@ test('Launch Google with new browser instance', async ({ browser }) => {
     await expect(page).toHaveTitle("Google");
   });
 
-  test('Codegen Automation Tool', async ({ page }) => {
+  // Read JSON data 
+  const fs = require('fs'); 
+  const data = JSON.parse(fs.readFileSync('testdata/testData.json', 'utf-8'));
+  test.only('Read Test Data from json file', async ({ page }) => {
     await page.goto('https://www.google.com/');
-    await page.getByLabel('Search', { exact: true }).fill('Testing using Playwright');
+    await page.getByLabel('Search', { exact: true }).fill(data.googleSearchInput);
     await page.getByLabel('Google Search').first().click();
     await page.getByRole('link', { name: 'Playwright: Fast and reliable' }).click();
   });
