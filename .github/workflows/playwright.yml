@@ -30,10 +30,6 @@ jobs:
       - name: Install Local Dependencies
         run: npm ci  # This installs the dependencies defined in package.json
 
-      # Install Playwright Browsers
-      - name: Install Playwright Browsers
-        run: npx playwright install chromium
-
   # Test Job: This job will run the Playwright tests
   test:
     runs-on: ubuntu-latest
@@ -52,6 +48,10 @@ jobs:
       # Install local dependencies again to ensure node_modules is present in this job
       - name: Install Local Dependencies
         run: npm ci  # Ensure node_modules are available
+
+      # Install Playwright Browsers
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium
 
       # Run Playwright tests
       - name: Run Playwright Tests
