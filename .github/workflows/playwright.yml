@@ -30,6 +30,9 @@ jobs:
       - name: Install Local Dependencies
         run: npm ci  # This installs the dependencies defined in package.json
 
+      - name: Set REPORT_PATH variable
+        run: echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
+
   # Test Job: This job will run the Playwright tests
   test:
     runs-on: ubuntu-latest
@@ -70,6 +73,8 @@ jobs:
   report:
     runs-on: ubuntu-latest
     needs: test  # Ensures the test job is completed first
+    env: 
+      REPORT_PATH: ${{ env.REPORT_PATH }} # Make REPORT_PATH available here
     steps:
       # Checkout the repository
       - name: Checkout repository
@@ -92,31 +97,28 @@ jobs:
         with:
           name: allure-report
           path: allure-report/
-
-  # Deploy Job: This job deploys the Allure report to GitHub Pages
-  deploy:
-    runs-on: ubuntu-latest
-    needs: report  # Ensures the report job is completed first
-    steps:
-      # Checkout the repository
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # Set unique report path environment variable
-      - name: Set Report Path
-        run: |
-          echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
-          echo "GitHub Pages URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
-
-      # Install Allure CLI if not available globally
-      - name: Install Allure CLI
-        run: npm install -g allure-commandline
-        
+      
       # Move Allure report to unique path
       - name: Move Allure Report to Unique Path
         run: |
           mkdir -p ${{ env.REPORT_PATH }}
           cp -r allure-report/* ${{ env.REPORT_PATH }}/
+
+  # Deploy Job: This job deploys the Allure report to GitHub Pages
+  deploy:
+    runs-on: ubuntu-latest
+    needs: report  # Ensures the report job is completed first
+    env: 
+      REPORT_PATH: ${{ env.REPORT_PATH }} # Make REPORT_PATH available here
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Print report path environment variable
+      - name: Print Report Path
+        run: |
+          echo "GitHub Pages URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
 
       # Deploy Allure Report to GitHub Pages
       - name: Deploy Allure Report to GitHub Pages
