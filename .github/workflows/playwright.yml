@@ -108,6 +108,10 @@ jobs:
           echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
           echo "GitHub Pages URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
 
+      # Install Allure CLI if not available globally
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline
+        
       # Move Allure report to unique path
       - name: Move Allure Report to Unique Path
         run: |
