@@ -79,6 +79,10 @@ jobs:
       - name: Set REPORT_PATH variable
         run: echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
 
+      # Install local dependencies again to ensure node_modules is present in this job
+      - name: Install Local Dependencies
+        run: npm ci  # Ensure node_modules are available
+
       # Install Allure CLI if not available globally
       - name: Install Allure CLI
         run: npm install -g allure-commandline
