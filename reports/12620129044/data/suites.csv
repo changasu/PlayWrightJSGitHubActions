@@ -1,0 +1,2 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","1147","Launch Google with new browser instance","chromium","Sun Jan 05 13:56:46 UTC 2025","passed","Sun Jan 05 13:56:47 UTC 2025","","githubIntegration.spec.js","",""
