@@ -11,11 +11,9 @@ permissions:
   issues: write
 
 jobs:
-  # Setup Job: This job installs dependencies globally
+  # Setup Job: Install dependencies locally (including playwright and @playwright/test)
   setup:
     runs-on: ubuntu-latest
-    outputs:
-      node-version: ${{ steps.setup-node.outputs.node-version }}
     steps:
       # Checkout the repository
       - name: Checkout repository
@@ -28,12 +26,13 @@ jobs:
         with:
           node-version: lts/*
 
-      # Install global dependencies (Playwright browsers and Allure CLI)
-      - name: Install Global Dependencies
-        run: |
-          npm ci
-          npm install -g allure-commandline
-          npx playwright install chromium
+      # Install dependencies (including playwright and @playwright/test locally)
+      - name: Install Local Dependencies
+        run: npm ci  # This installs the dependencies defined in package.json
+
+      # Install Playwright Browsers
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium
 
   # Test Job: This job will run the Playwright tests
   test:
@@ -49,6 +48,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ needs.setup.outputs.node-version }}
+
+      # Install local dependencies again to ensure node_modules is present in this job
+      - name: Install Local Dependencies
+        run: npm ci  # Ensure node_modules are available
 
       # Run Playwright tests
       - name: Run Playwright Tests
