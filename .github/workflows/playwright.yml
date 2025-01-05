@@ -52,15 +52,15 @@ jobs:
         with:
           name: playwright-report
 
-      - name: Debug Allure Results
-        run: |
-          echo "Listing allure-results directory:"
-          ls -l allure-results
-
       - name: Generate Allure report
         run: |
           mkdir -p allure-results
           allure generate allure-results --clean -o allure-report
+
+      - name: Debug Allure Results
+        run: |
+          echo "Listing allure-results directory:"
+          ls -l allure-results
 
       - name: Debug Allure Report Generation
         run: |
