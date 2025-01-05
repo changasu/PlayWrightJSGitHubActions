@@ -70,15 +70,21 @@ jobs:
       run: |
         echo "::notice ::Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
 
-    - name: Debug Secret Access 
-      run: echo ${{ secrets.SLACK_WEBHOOK_URL }}
+    - name: Verify SLACK_WEBHOOK_URL secret
+      run: |
+        if [ -z "${{ secrets.SLACKWEBHOOKURL }}" ]; then
+          echo "SLACK_WEBHOOK_URL is not set!"
+          exit 1
+        else
+          echo "SLACK_WEBHOOK_URL is set!"
+        fi
 
     - name: Send notification to Slack 
       uses: 8398a7/action-slack@v3 
       with: 
         status: ${{ job.status }} 
         fields: repo,message,commit,author,action 
-        url: ${{ secrets.SLACK_WEBHOOK_URL }} 
+        url: ${{ secrets.SLACKWEBHOOKURL }} 
         author_name: GitHub Actions 
-        author_icon: https://github.com/images/logo.png 
+        icon_emoji: https://github.com/images/logo.png 
         message: "Latest GitHub Actions Pipeline Status:"
