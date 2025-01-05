@@ -82,7 +82,7 @@ jobs:
         fi
         curl -X POST -H 'Content-type: application/json' \
         --data "{
-          \"text\": \"${STATUS}\n*Branch*: ${{ github.ref_name }}\n*Commit*: ${{ github.sha }}\n*Committer*: ${{ github.actor }}\n*Workflow*: ${{ github.workflow }}\",
+          \"text\": \"${STATUS}\n*Branch*: ${{ github.ref_name }}\n*Commit*: ${{ github.sha }}\n*Committer*: ${{ github.actor }}\n*Workflow*: ${{ github.workflow }}\n*Allure-Report-URL*: Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}\",
           \"attachments\": [
             {
               \"text\": \"View more details: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Click here>\"
