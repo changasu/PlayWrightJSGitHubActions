@@ -74,49 +74,47 @@ jobs:
           path: ${{ github.workspace }}/allure-report
 
   deploy:
-    needs: generate-report
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout gh-pages branch
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: gh-pages
+  needs: generate-report
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout gh-pages branch
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: gh-pages
 
-      - name: Download Allure report
-        uses: actions/download-artifact@v4
-        with:
-          name: allure-report
+    - name: Download Allure report
+      uses: actions/download-artifact@v4
+      with:
+        name: allure-report
 
-      - name: Debug Artifact Download
-        run: |
-          echo "Listing downloaded artifact contents:"
-          ls -l allure-report
+    - name: Debug Artifact Download
+      run: |
+        echo "Listing downloaded artifact contents:"
+        ls -l allure-report
 
-      - name: Check for Allure Report
-        run: |
-          if [ ! -d "allure-report" ]; then
-            echo "Allure report directory is missing!"
-            exit 1
-          fi
+    - name: Set unique path for report
+      run: |
+        echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
 
-      - name: Set unique path for report
-        run: |
-          echo "REPORT_PATH=reports/${{ github.run_id }}" >> $GITHUB_ENV
+    - name: Move Allure report to unique path
+      run: |
+        mkdir -p ${{ env.REPORT_PATH }}
+        cp -r allure-report/* ${{ env.REPORT_PATH }}/
 
-      - name: Move Allure report to unique path
-        run: |
-          mkdir -p ${{ env.REPORT_PATH }}
-          cp -r allure-report/* ${{ env.REPORT_PATH }}/
+    - name: Debug Deployment Directory
+      run: |
+        echo "Listing deployment directory contents:"
+        ls -l
 
-      - name: Deploy Allure report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ env.REPORT_PATH }}
-          publish_branch: gh-pages
-          dest_dir: ${{ env.REPORT_PATH }}
+    - name: Deploy Allure report to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: .
+        publish_branch: gh-pages
+        dest_dir: ${{ env.REPORT_PATH }}
 
-      - name: Display the deployed URL
-        run: |
-          echo "::notice ::Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
+    - name: Display the deployed URL
+      run: |
+        echo "::notice ::Deployed Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_id }}"
