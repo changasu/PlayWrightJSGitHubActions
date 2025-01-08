@@ -1,3 +1,0 @@
-"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","2073","Read Test Data from json file","chromium","Sun Jan 05 15:19:49 UTC 2025","passed","Sun Jan 05 15:19:51 UTC 2025","","githubIntegration.spec.js","",""
-"","897","Launch Google with new browser instance","chromium","Sun Jan 05 15:19:46 UTC 2025","passed","Sun Jan 05 15:19:47 UTC 2025","","githubIntegration.spec.js","",""

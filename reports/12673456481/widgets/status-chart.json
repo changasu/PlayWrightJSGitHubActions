@@ -1,0 +1,1 @@
+[{"uid":"9a19fe3a9627c8a1","name":"Read Test Data from json file","time":{"start":1736349333828,"stop":1736349336669,"duration":2841},"status":"passed","severity":"normal"},{"uid":"534c9e9950dcaad6","name":"Launch Google with new browser instance","time":{"start":1736349331915,"stop":1736349332906,"duration":991},"status":"passed","severity":"normal"}]
