@@ -14,7 +14,12 @@ test('Launch Google with new browser instance', async ({ browser }) => {
 
   // Read JSON data 
   const fs = require('fs'); 
-  const data = JSON.parse(fs.readFileSync('testdata/testData.json', 'utf-8'));
+  let data;
+  try{
+    data = JSON.parse(fs.readFileSync('testdata/testData.json', 'utf-8'));
+  } catch (error) {
+    console.error('Failed to read JSON file:', error);
+  }
   test('Read Test Data from json file', async ({ page }) => {
     await page.goto('https://www.google.com/');
     await page.getByLabel('Search', { exact: true }).fill(data.googleSearchInput);
